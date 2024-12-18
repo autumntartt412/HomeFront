@@ -1,0 +1,10 @@
+/* html
+body {
+    background: linear-gradient(180deg, rgba(149, 187, 245, 0.699), rgba(124, 177, 240, 0.557), rgba(133, 134, 138, 0.626)); 
+} */
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
