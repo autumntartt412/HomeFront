@@ -52,7 +52,7 @@ const Contact = () => {
     
       // Append the form fields to FormData
       Object.keys(formData).forEach((key) => {
-        // Handle the case where 'image' is a file (we don't want to stringify it)
+        // Handle case where 'image' is a file 
         if (key === "image" && formData[key]) {
           formDataForUpload.append('image', formData[key]);
         } else {
