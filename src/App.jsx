@@ -23,7 +23,7 @@ const App = () => {
   {/* ***********trying to send form to commentRoute********** */}
 
 <Routes>
-  <Route path='/signUps' element={<Contact/>}/>
+  {/* <Route path='/signUps' element={<Contact/>}/> */}
   <Route path='/saveComment' element={<Contact/>}/>
 </Routes>
     

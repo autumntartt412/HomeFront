@@ -8,13 +8,13 @@ const Contact = () => {
     const [result, setResult] = useState("");
     // const [name, setName] = useState("");
     const [formData, setFormData] = useState({
-      name: "",
-      title: "",
-      email: "",
-      contact: 1234567890,
-      rating: 5,
-      image: "",
-      text: "",
+      // name: "",
+      // title: "",
+      // email: "",
+      // contact: 1234567890,
+      // rating: 5,
+      // image: "",
+      // text: "",
     })
 
     const handleChange = (event) => {
@@ -26,53 +26,95 @@ const Contact = () => {
         [event.target.email]: event.target.value,
         [event.target.contact]: event.target.value,
         [event.target.rating]: event.target.value,
+        [event.target.image]: event.target.value,
         [event.target.text]: event.target.value,
        
       })
     }
 
-    const onSubmit = async(event) => {
+    // const handleChange = (event) => {
+    //   const { name, title, email, contact, rating, image, text, value } = event.target;  
+    
+    //   setFormData({
+    //     ...formData,
+    //     [name, title, email, contact, rating, image, text]: value,  
+    //   });
+    // };
+
+
+    const onSubmit = async (event) => {
       event.preventDefault();
       setResult("Sending...");
       console.log(formData);
-      try {
-        const response = await fetch('/saveComment', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData), 
-        });
-
-        try {
-          const result = await response.json();
-          if (result.success) {
-            setResult('Form Submitted!');
-            event.target.reset();
-          } else {
-            alert('Error: ' + result.message);
-            setResult('');
-          }
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-          alert('Error: Failed to parse JSON response');
+    
+      // Create a new FormData object to send to your backend
+      const formDataForUpload = new FormData();
+    
+      // Append the form fields to FormData
+      Object.keys(formData).forEach((key) => {
+        // Handle the case where 'image' is a file (we don't want to stringify it)
+        if (key === "image" && formData[key]) {
+          formDataForUpload.append('image', formData[key]);
+        } else {
+          formDataForUpload.append(key, formData[key]);
         }
-
-// ********************************8Toast/API web3Forms*******************************************
-
-
+      });
+    
+      try {
+        // Send form data to your own backend (saveComment endpoint)
+        const response = await fetch('/saveComment', {
+          method: 'POST',
+          body: formDataForUpload, // Send form data as FormData
+        });
+    
+        // Check if response is successful before parsing JSON
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    
+        const result = await response.json(); // Parse the JSON response
+        if (result.success) {
+          setResult('Form Submitted!');
+          event.target.reset(); // Reset form after success
+        } else {
+          alert('Error: ' + result.message);
+          setResult('');
+        }
+      } catch (error) {
+        console.error('Error sending form data:', error);
+        alert('Error: ' + error.message);
+        setResult('');
+      }
+    
+      // ********************************8Toast/API web3Forms*******************************************
+      try {
+        // Prepare FormData for Web3Forms API
         const web3FormData = new FormData();
         Object.keys(formData).forEach((key) => {
-          web3FormData.append(key, formData[key]);
+          // Handle appending the image as well if present
+          if (key === "image" && formData[key]) {
+            web3FormData.append('image', formData[key]);
+          } else {
+            web3FormData.append(key, formData[key]);
+          }
         });
-
+    
+        // Toast  access key
         web3FormData.append("access_key", "ef5144dc-54c4-422c-9e51-b5f3840ab8c6");
-  
+    
+     
         const web3Response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           body: web3FormData,
         });
-  
+    
+       
+        if (!web3Response.ok) {
+          throw new Error(`Web3Forms HTTP error! status: ${web3Response.status}`);
+        }
+    
+        // ********************************8Toast/API web3Forms*******************************************
+
         const web3Data = await web3Response.json();
         if (web3Data.success) {
           setResult("Form Submitted!");
@@ -80,7 +122,7 @@ const Contact = () => {
           alert("Web3Form Error: " + web3Data.message);
         }
       } catch (error) {
-        console.error("Error sending form data:", error);
+        console.error("Error sending form data to Web3Forms:", error);
         setResult("");
         alert("Error: " + error.message);
       }
