@@ -6,6 +6,8 @@ import Comments from './components/Comments'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ImageUploadFile from './components/ImageUploadFile'
+import { Routes, Route } from 'react-router-dom'
+
 // import { ToastContainer } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,6 +19,13 @@ const App = () => {
   return (
    
     <div className='w-full overFlow-hidden'>
+
+  {/* ***********trying to send form to commentRoute********** */}
+
+<Routes>
+  <Route path='/signUps' element={<Contact/>}/>
+  <Route path='/saveComment' element={<Contact/>}/>
+</Routes>
     
     {/* <ToastContainer/> */}
     <Header/>

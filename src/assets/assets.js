@@ -1,4 +1,6 @@
 import logohome from './logohome.svg'
+import homecaplogo from './homecaplogo.png'
+import hclogo from './hclogo.png'
 import cross_icon from './cross_icon.svg'
 import menu_icon from './menu_icon.svg'
 import star_icon from './star_icon.svg'
@@ -21,6 +23,8 @@ import agent3 from './agent3.jpg'
 
 export const assets = {
     logohome,
+    homecaplogo,
+    hclogo,
     cross_icon,
     menu_icon,
     star_icon,

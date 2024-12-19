@@ -7,7 +7,7 @@ const Nav = () => {
          <div className='nav absolute top-0 left-0 w-full z-10'>
         <div className='navContainer mx-auto flex justify-between items-center py-4 px-6 md:px-20 lg:px-32 bg-transparent'>
 
-            <img src={assets.logohome} alt="logo"/>
+            <img src={assets.hclogo} alt="logo"/>
             <ul className='hidden md:flex gap:20 text-white gap-5'>
                 <a href="#Header" className='cursor-progress hover:text-blue-800'>Home</a>
                 <a href="#About" className='cursor-progress hover:text-blue-800'>About</a>

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 const ImageUploadFile = () => {
 
+  // ****************************img upload button for contact form***************************
+  
   const [image, setImage] = useState(null);
 
   const handleImageChange = (e) => {
@@ -39,7 +41,7 @@ const ImageUploadFile = () => {
 
 export default ImageUploadFile;
 
-
+// **********************************cloudinary home uploads******************************** 
 
   // const homeImgs = [
 //   {name: "home2",
@@ -59,7 +61,7 @@ export default ImageUploadFile;
 // ]
 
 
-
+// ***************************************MULTER********************************************************
 
  // import React, { useState } from 'react';
 

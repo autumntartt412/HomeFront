@@ -1,63 +1,119 @@
 import React, { useState } from 'react'
 
-const Contact = () => {
-    const [result, setResult] = React.useState("");
 
-    const onSubmit = async (event) => {
+// **************having parsing issues******************
+
+
+const Contact = () => {
+    const [result, setResult] = useState("");
+    // const [name, setName] = useState("");
+    const [formData, setFormData] = useState({
+      name: "",
+      title: "",
+      email: "",
+      contact: 1234567890,
+      rating: 5,
+      image: "",
+      text: "",
+    })
+
+    const handleChange = (event) => {
+      console.log(event.target.value);
+      setFormData({
+        ...formData, 
+        [event.target.name]: event.target.value,
+        [event.target.title]: event.target.value,
+        [event.target.email]: event.target.value,
+        [event.target.contact]: event.target.value,
+        [event.target.rating]: event.target.value,
+        [event.target.text]: event.target.value,
+       
+      })
+    }
+
+    const onSubmit = async(event) => {
       event.preventDefault();
-      setResult("Sending....");
-      const formData = new FormData(event.target);
+      setResult("Sending...");
+      console.log(formData);
+      try {
+        const response = await fetch('/saveComment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), 
+        });
+
+        try {
+          const result = await response.json();
+          if (result.success) {
+            setResult('Form Submitted!');
+            event.target.reset();
+          } else {
+            alert('Error: ' + result.message);
+            setResult('');
+          }
+        } catch (error) {
+          console.error('Error parsing JSON:', error);
+          alert('Error: Failed to parse JSON response');
+        }
+
+// ********************************8Toast/API web3Forms*******************************************
+
+
+        const web3FormData = new FormData();
+        Object.keys(formData).forEach((key) => {
+          web3FormData.append(key, formData[key]);
+        });
+
+        web3FormData.append("access_key", "ef5144dc-54c4-422c-9e51-b5f3840ab8c6");
   
-      formData.append("access_key", "ef5144dc-54c4-422c-9e51-b5f3840ab8c6");
+        const web3Response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: web3FormData,
+        });
   
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
-      });
-  
-      const data = await response.json();
-  
-      if (data.success) {
+        const web3Data = await web3Response.json();
+        if (web3Data.success) {
+          setResult("Form Submitted!");
+        } else {
+          alert("Web3Form Error: " + web3Data.message);
+        }
+      } catch (error) {
+        console.error("Error sending form data:", error);
         setResult("");
-        // toast.success("Form Submitted!")
-        alert("Form Submitted!")
-        event.target.reset();
-      } else {
-        console.log("Error", data);
-        // toast.error("data.message!")
-        alert("Error: " + data.message)
-        setResult("");
+        alert("Error: " + error.message);
       }
     };
 
-      const [image, setImage] = useState(null);
-    
-      const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
-      };
-    
-      const handleUpload = async () => {
-        const formData = new FormData();
-        formData.append('image', image);
-    
-        try {
-          const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          });
-    
-          if (!response.ok) {
-            throw new Error('Upload failed');
-          }
-    
-          const data = await response.json();
-          console.log('Image uploaded:', data);
-        } catch (error) {
-          console.error('Upload error:', error);
-        }
-      };
-   
+// *************************************img upload button*************************************
 
+      
+  // const handleUpload = async () => {
+  //   if (!formData.image) {
+  //     alert('Please choose an image to upload');
+  //     return;
+  //   }
+
+  //   const formDataForUpload = new FormData();
+  //   formDataForUpload.append('image', formData.image);
+
+  //   try {
+  //     const response = await fetch('/api/upload', {
+  //       method: 'POST',
+  //       body: formDataForUpload,
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error('Upload failed');
+  //     }
+
+  //     const data = await response.json();
+  //     console.log('Image uploaded:', data);
+  //   } catch (error) {
+  //     console.error('Upload error:', error);
+  //   }
+  // };
   return (
 
     <div id='Contact' className='text-center p-6 py-20 lg:px-32 w-full overflow-hidden'>
@@ -73,6 +129,8 @@ const Contact = () => {
               className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
               name="name"
               type="text"
+              onChange={handleChange}
+              value={formData.name}
               placeholder="Name"
               required
             />
@@ -83,6 +141,8 @@ const Contact = () => {
               className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
               name="title"
               type="text"
+              onChange={handleChange}
+              value={formData.title}
               placeholder="Title"
               required
             />
@@ -94,6 +154,8 @@ const Contact = () => {
               className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
               name="email"
               type="email"
+              onChange={handleChange}
+              value={formData.email}
               placeholder="Email"
               required
             />       
@@ -104,6 +166,8 @@ const Contact = () => {
               className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
               name="number"
               type="text"
+              onChange={handleChange}
+              value={formData.contact}
               placeholder="Contact"
             />
           </div>
@@ -113,39 +177,33 @@ const Contact = () => {
               className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
               name="rating"
               type="number"
+              onChange={handleChange}
+              value={formData.rating}
               placeholder="Rating"
               min="1"
               max="5"
             />
           </div>
           <div className="w-full md:w-1/2 text-left">
-            Profile Image
-           <div>
-      <input 
-      className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
-      name="url"
-      type="file" onChange={handleImageChange} />
-      <button onClick={handleUpload}></button>
-    </div>
-
-    <div className="my-4">
-          {/* Keep the upload button to trigger the image upload */}
-          <button
-            type="button"
-            onClick={handleUpload}
-            className="bg-blue-800 text-white rounded py-2 px-2 mb-2"
-          >
-            {result ? result : "Upload Image"}
-          </button>
-        </div>
+            Please enter a Profile Picture
+            <input
+              className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
+              name="image"
+              type="image"
+              onChange={handleChange}
+              value={formData.image}
+              placeholder="Image"
+            />
           </div>
+          
+          
         </div>
         <div className="my-6 text-left">
-          We Would Love to Hear From You
+          We Would Love to Hear From You!
           <textarea
             className="border border-blue-300 w-full rounded py-3 px-4 mt-2 h-48 resize-none"
             name="message"
-            placeholder="Message"
+            placeholder="Comments:"
             required
           ></textarea>
         </div>
@@ -165,10 +223,28 @@ const Contact = () => {
 
 export default Contact
 
-// name: { type: String, required: true },
-  // title: { type: String, required: false },
-  // image: { type: String, required: false },
-  // email: { type: Sring, required: false }
-  // contact: {type: number, required: false}
-  // rating: { type: Number, required: false },
-  // text: { type: String, required: true },
+// *******************************************img form button***************************************
+
+//  <div className="w-full md:w-1/2 text-left">
+//             Profile Image
+//            <div>
+//       <input 
+//       className="w-full border border-blue-300 rounded py-3 px-4 mt-2"
+//       name="url"
+//       type="file" onChange={handleImageChange} />
+//       <button onClick={handleUpload}></button>
+//     </div>
+
+//     <div className="my-4">
+//           {/* Keep the upload button to trigger the image upload */}
+//          <button
+//          type="button"
+//           onClick={handleUpload}
+//           onChange={handleChange}
+//           className="bg-blue-800 text-white rounded py-2 px-2 mb-2"
+//         >
+//          {result ? result : "Upload Image"}
+//       </button>
+//       </div>
+//        </div> 
+
