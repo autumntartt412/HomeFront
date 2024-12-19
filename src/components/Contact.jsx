@@ -1,21 +1,21 @@
-import React, { useState } from 'react'; // Import React and useState
+import React, { useState } from 'react';
 
 const Contact = () => {
-  const [result, setResult] = useState("");  // Correctly using useState hook
+  const [result, setResult] = useState(""); 
   const [formData, setFormData] = useState({
     name: "",
     title: "",
     email: "",
     contact: "",
     rating: 5,
-    image: null,
+    image: "null",
     message: "",
   });
 
   const handleChange = (event) => {
     const { name, value, files } = event.target;
     if (files) {
-      // Handle file input (for images)
+      // Handle file input for images
       setFormData({
         ...formData,
         [name]: files[0],
@@ -46,13 +46,29 @@ const Contact = () => {
     if (data.success) {
       setResult("");
       alert("Form Submitted!");
-      event.target.reset();
+
+  // Reset formData state to clear form
+  // setFormData({
+  //   name: "",
+  //   title: "",
+  //   email: "",
+  //   contact: "",
+  //   rating: 5,
+  //   image: null,
+  //   message: "",
+  // });
+
+  // event.target.reset(); // Reset  form 
+
+      event.target.reset(); // reset form
     } else {
       console.log("Error", data);
       alert("Error: " + data.message);
       setResult("");
     }
   };
+
+  
 
   return (
     <div id="Contact" className="text-center p-6 py-20 lg:px-32 w-full overflow-hidden">
